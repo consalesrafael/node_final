@@ -1,5 +1,6 @@
-const pagesControlle = {
+const pagesController = {
         renderIndex: (req,res) =>{
-            res.render("view/login")
-        }
+            res.render("index")
+    }
 }
+module.exports= pagesController
