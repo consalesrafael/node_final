@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 // const { where } = require("sequelize");
 const router = require("./routes/routes")
 
-app.use(express.static(path.join(__dirname, "view")));
+app.set("view", path.join(__dirname, "view"))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 app.use("/",router)
