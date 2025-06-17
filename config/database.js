@@ -1,10 +1,10 @@
-const ms = require("ms");
+require("dotenv").config()
 const Sequelize = require("sequelize")
 
-const connection = new Sequelize("node_final","root","root",{
+const connection = new Sequelize(DB_NAME,DB_USER,DB_PASSWORD,{
     host: "localhost",
     dialect: "mysql",
-    port: "3307"
+    port: DB_PORT
 });
     connection
             .authenticate

@@ -7,11 +7,12 @@ const bodyParser = require("body-parser");
 // const { where } = require("sequelize");
 const router = require("./routes/routes")
 
-app.set("view", path.join(__dirname, "view"))
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 app.use("/",router)
-app.set("view engine", "ejs")
+
 
 app.listen("3000", (req,res)=>{
     console.log("Abriu na porta 3000")
