@@ -7,6 +7,7 @@ router.get("/screnCreate",(req,res)=>{
     res.render("pages/screnCreate")
 })
 router.post("/createUser", userController.createUser)
+router.post("/validaUsuario", loginController.validaUsuario)
 router.get("/",(req,res)=>{
     res.render('login')
 })

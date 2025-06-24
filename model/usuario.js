@@ -1,27 +1,28 @@
 const { type } = require("os");
 const Sequelize = require("../config/database")
-const connection = require("./banco")
+const connection = require("../config/database");
+const { DataTypes } = require("sequelize");
 
 const usuario = connection.define('usuario', {
     nome: { 
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     senha: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
-    role:{
-        type: DataTypes.STRING,
-        
-    }
-    
+     role:{
+       type: DataTypes.ENUM("adm, user"),
+        allowNull:false,
+        default: "user"
+     } 
 }, {
-    timestamps: false 
+    timestamps: false
 });
 
  usuario.sync({force: false}).then(()=>{})
