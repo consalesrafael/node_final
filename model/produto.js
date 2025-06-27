@@ -1,27 +1,22 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const connection = require("../config/database");
 
-const usuario = connection.define('usuario', {
+const produtos = connection.define('produto', {
     nome: { 
         type: DataTypes.STRING,
         allowNull: false
     },
-    email: {
+    descricao: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        
     },
-    senha: {
+    categoria: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-    role: {
-        type: DataTypes.ENUM("adm", "user"),
-        allowNull: false,
-        defaultValue: "user"
-    } 
+    }
 }, {
-    tableName: "usuario",
+    tableName: "produtos",
     timestamps: false 
 });
 

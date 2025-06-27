@@ -1,0 +1,63 @@
+<%- include ("../partials/header") %>
+
+<body>
+  <%- include ("../partials/navBar") %>
+
+  <div class="container py-5">
+    
+    <div class="d-flex justify-content-end mb-4">
+      <a href="/produtos/novo" class="btn btn-success">Criar Produto</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
+      
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <img src="/images/produto1.jpg" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Produto 1">
+          <div class="card-body">
+            <h3 class="card-title">Produto 1</h3>
+            <p class="card-text">Resumo do produto 1.</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 d-flex flex-column gap-2">
+            
+            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#produto1Modal">
+              Ler mais
+            </button>
+
+            
+            <a href="/produtos/editar/1" class="btn btn-warning w-100">Editar</a>
+
+           
+            <form action="/produtos/deletar/1" method="POST">
+              <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Tem certeza que deseja excluir este produto?')">
+                Excluir
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="produto1Modal" tabindex="-1" aria-labelledby="produto1ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="produto1ModalLabel">Detalhes do Produto 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <p>Aqui vão as informações completas do Produto 1.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include ("../partials/footer") %>
+</body>
+</html>
