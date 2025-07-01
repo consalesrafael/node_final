@@ -4,52 +4,89 @@
   <%- include ("../partials/navBar") %>
 
   <div class="container py-5">
-    
     <div class="d-flex justify-content-end mb-4">
-      <a href="/produtos/novo" class="btn btn-success">Criar Produto</a>
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createProductModal">
+        Criar Produto
+      </button>
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
-      
+      <% produtos.forEach(produto => { %>
       <div class="col">
         <div class="card h-100 shadow-sm border-0">
-          <img src="/images/produto1.jpg" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Produto 1">
+          <img src="<%= produto.imagemUrl || '/images/produto_padrao.jpg' %>" class="card-img-top"
+            style="height: 300px; object-fit: cover;" alt="<%= produto.nome %>">
           <div class="card-body">
-            <h3 class="card-title">Produto 1</h3>
-            <p class="card-text">Resumo do produto 1.</p>
+            <h3 class="card-title"><%= produto.nome %></h3>
+            <p class="card-text"><%= produto.descricao %></p>
           </div>
           <div class="card-footer bg-transparent border-0 d-flex flex-column gap-2">
-            
-            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#produto1Modal">
+            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal"
+              data-bs-target="#modal_<%= produto.id %>">
               Ler mais
             </button>
-
-            
-            <a href="/produtos/editar/1" class="btn btn-warning w-100">Editar</a>
-
-           
-            <form action="/produtos/deletar/1" method="POST">
-              <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Tem certeza que deseja excluir este produto?')">
+            <a href="/produtos/editar/<%= produto.id %>" class="btn btn-warning w-100">Editar</a>
+            <form action="/produtos/deletar/<%= produto.id %>" method="POST">
+              <button type="submit" class="btn btn-danger w-100"
+                onclick="return confirm('Tem certeza que deseja excluir este produto?')">
                 Excluir
               </button>
             </form>
           </div>
         </div>
       </div>
+      <% }) %>
     </div>
   </div>
 
+  <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form action="/createProduct" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createProductModalLabel">Adicionar Novo Produto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome do Produto</label>
+              <input type="text" class="form-control" id="nomep" name="nomep" required>
+            </div>
+            <div class="mb-3">
+              <label for="descricao" class="form-label">Descrição</label>
+              <textarea class="form-control" id="descricaop" name="descricaop" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="categoria" class="form-label">Categoria</label>
+              <input type="text" class="form-control" id="categoriap" name="categoriap">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar Produto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-
-  <div class="modal fade" id="produto1Modal" tabindex="-1" aria-labelledby="produto1ModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+  <% produtos.forEach(produto => { %>
+  <div class="modal fade" id="modal_<%= produto.id %>" tabindex="-1" aria-labelledby="modalLabel_<%= produto.id %>"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="produto1ModalLabel">Detalhes do Produto 1</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          <h5 class="modal-title" id="modalLabel_<%= produto.id %>"><%= produto.nome %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>Aqui vão as informações completas do Produto 1.</p>
+          <p><strong>Descrição Detalhada:</strong> Aqui você pode colocar uma descrição muito mais completa do <%=
+            produto.nome %>.</p>
+          <p><strong>Categoria:</strong> <%= produto.categoria %></p>
+          <% if (typeof produto.preco==='number' ) { %>
+          <p><strong>Preço:</strong> R$ <%= produto.preco.toFixed(2).replace('.', ',') %></p>
+          <% } %>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -57,6 +94,7 @@
       </div>
     </div>
   </div>
+  <% }) %>
 
   <%- include ("../partials/footer") %>
 </body>

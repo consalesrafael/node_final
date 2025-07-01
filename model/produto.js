@@ -20,8 +20,8 @@ const produtos = connection.define('produto', {
     timestamps: false 
 });
 
-usuario.sync({ force: false }).then(() => {
+produtos.sync({ force: false }).then(() => {
     console.log("Tabela de usuário criada com sucesso!");
 });
 
-module.exports = usuario;
+module.exports = produtos;

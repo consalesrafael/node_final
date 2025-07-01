@@ -2,32 +2,59 @@
 
 <body>
   <%- include ("../partials/navBar") %>
+  
   <div class="container py-5">
     <h1 class="mb-5 text-center">Catálogo de Produtos</h1>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
-      
-      <!-- Produto 1 -->
-      <div class="col">
-        <div class="card h-100 shadow-sm border-0">
-          <img src="/images/produto1.jpg" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Produto 1">
-          <div class="card-body">
-            <h3 class="card-title">Produto 1</h3>
-            <p class="card-text">Resumo do produto 1.</p>
+
+      <%# 1. Loop corrigido para 'produto' (singular) %>
+      <% produtos.forEach(produto => { %>
+
+        <div class="col">
+          <div class="card h-100 shadow-sm border-0">
+            
+            <%# 2. Dados dinâmicos para imagem, título e descrição %>
+            <img src="<%= produto.imagemUrl || '/images/produto_padrao.jpg' %>" class="card-img-top" style="height: 300px; object-fit: cover;" alt="<%= produto.nome %>">
+            <div class="card-body">
+              <h3 class="card-title"><%= produto.nome %></h3>
+              <p class="card-text"><%= produto.descricao %></p>
+            </div>
+
+            <div class="card-footer bg-transparent border-0">
+              <%# 3. Botão com alvo dinâmico para o modal específico de cada produto %>
+              <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_<%= produto.id %>">
+                Ler mais
+              </button>
+            </div>
+
           </div>
-          <div class="card-footer bg-transparent border-0">
-            <!-- Botão para abrir o modal -->
-            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#produto1Modal">
-              Ler mais
-            </button>
+        </div>
+
+      <% }) %> 
+
+    </div> </div>
+
+  <% produtos.forEach(produto => { %>
+    <div class="modal fade" id="modal_<%= produto.id %>" tabindex="-1" aria-labelledby="modalLabel_<%= produto.id %>" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel_<%= produto.id %>"><%= produto.nome %></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Descrição Detalhada:</strong> Aqui você pode colocar uma descrição muito mais completa do <%= produto.nome %>.</p>
+            <p><strong>Categoria:</strong> <%= produto.categoria %></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
       </div>
-
-
+    </div>
+  <% }) %>
 
   <%- include ("../partials/footer") %>
-
-  
 </body>
 </html>
