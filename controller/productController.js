@@ -31,15 +31,25 @@ async function criaProduto(req,res) {
         descricao:descricao,
         categoria: categoria
      }).then(()=>{
-        res.render('pages/gerenciaProdutos', {
-            user: req.user,
-            currentRoute: req.path,
-            produtos: produtos
-        });
+        res.redirect("/gerenciarProdutos")
      })
+}
+async function deletaProduto(req,res) {
+        const produtoId = req.params.id
+
+        if(produtoId){
+            Produto.destroy({
+                where:{
+                    id:produtoId
+                }
+            }).then(()=>{
+                res.redirect("/gerenciarProdutos")
+            })
+        }
 }
 
 module.exports={
     renderizaProduto,
-    criaProduto
+    criaProduto,
+    deletaProduto
 }

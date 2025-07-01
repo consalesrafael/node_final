@@ -25,6 +25,8 @@ router.get("/gerenciarProdutos",authMiddleware.verificaJWT, productController.re
 router.post("/logout",loginController.logout)
 router.post("/createProduct", authMiddleware.verificaJWT,productController.criaProduto )
 router.post("/createUser", userController.createUser)
+router.post("/produtos/deletar/:id", authMiddleware.verificaJWT, productController.deletaProduto)
+
 router.post("/login", loginController.login)
 
 router.get("/",(req,res)=>{
