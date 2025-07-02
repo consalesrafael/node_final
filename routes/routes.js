@@ -4,8 +4,19 @@ const loginController = require("../controller/loginController")
 const userController = require("../controller/userController")
 const authMiddleware = require("../middlewares/authMiddleware")
 const productController = require("../controller/productController");
-const produto = require("../model/produto")
-// router.get("/", loginController.renderIndex)
+const produto = require("../model/produto");
+const path = require("path");
+const multer = requrie("multer")
+
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'public/uploads/')
+    },
+    filename:function (req,res,cb){
+        cb(null, Date.now()+path.extname(file.originalname))
+    }
+})
 router.get("/screnCreate",(req,res)=>{
     res.render("pages/screnCreate")
 })
@@ -21,6 +32,7 @@ router.get("/home", authMiddleware.verificaJWT, (req, res) => {
         res.status(500).send("Erro ao carregar a página.");
     });
 });
+
 router.get("/gerenciarProdutos",authMiddleware.verificaJWT, productController.renderizaProduto)
 router.post("/logout",loginController.logout)
 router.post("/createProduct", authMiddleware.verificaJWT,productController.criaProduto )

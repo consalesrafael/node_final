@@ -23,13 +23,15 @@ async function criaProduto(req,res) {
      const nome = req.body.nomep
      const descricao = req.body.descricaop
      const categoria = req.body.categoriap
+     const imagem = req.body.imagem
 
      console.log(nome,descricao,categoria) 
 
      Produto.create({
         nome: nome,
         descricao:descricao,
-        categoria: categoria
+        categoria: categoria,
+        imagemUrl: imagem
      }).then(()=>{
         res.redirect("/gerenciarProdutos")
      })

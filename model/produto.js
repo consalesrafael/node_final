@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const connection = require("../config/database");
+const { type } = require("os");
 
 const produtos = connection.define('produto', {
     nome: { 
@@ -14,6 +15,10 @@ const produtos = connection.define('produto', {
     categoria: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    imagemUrl:{
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: "produtos",
