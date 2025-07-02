@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware")
 const productController = require("../controller/productController");
 const produto = require("../model/produto");
 const path = require("path");
-const multer = requrie("multer")
+const multer = require("multer")
 
 
 const storage = multer.diskStorage({
@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now()+path.extname(file.originalname))
     }
 })
+const upload = multer({ storage: storage });
 router.get("/screnCreate",(req,res)=>{
     res.render("pages/screnCreate")
 })
@@ -35,7 +36,8 @@ router.get("/home", authMiddleware.verificaJWT, (req, res) => {
 
 router.get("/gerenciarProdutos",authMiddleware.verificaJWT, productController.renderizaProduto)
 router.post("/logout",loginController.logout)
-router.post("/createProduct", authMiddleware.verificaJWT,productController.criaProduto )
+router.post('/createProduct', upload.single('imagem'), productController.criaProduto);
+// router.post('/produtos/editar/:id', upload.single('imagem'), productController.updateProduct);
 router.post("/createUser", userController.createUser)
 router.post("/produtos/deletar/:id", authMiddleware.verificaJWT, productController.deletaProduto)
 
