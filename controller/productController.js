@@ -82,6 +82,7 @@ async function editarProduto(req,res) {
      })
 }
 
+
 module.exports={
     renderizaProduto,
     criaProduto,
