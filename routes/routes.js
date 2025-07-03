@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, 'public/uploads/')
     },
-    filename:function (req,res,cb){
+    filename:function (req,file,cb){
         cb(null, Date.now()+path.extname(file.originalname))
     }
 })
@@ -36,8 +36,8 @@ router.get("/home", authMiddleware.verificaJWT, (req, res) => {
 
 router.get("/gerenciarProdutos",authMiddleware.verificaJWT, productController.renderizaProduto)
 router.post("/logout",loginController.logout)
-router.post('/createProduct', upload.single('imagem'), productController.criaProduto);
-// router.post('/produtos/editar/:id', upload.single('imagem'), productController.updateProduct);
+router.post('/createProduct', upload.single('imagem'),authMiddleware.verificaJWT, productController.criaProduto);
+router.post('/produtos/editar/:id', upload.single('imagem'),authMiddleware.verificaJWT, productController.editarProduto);
 router.post("/createUser", userController.createUser)
 router.post("/produtos/deletar/:id", authMiddleware.verificaJWT, productController.deletaProduto)
 

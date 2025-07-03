@@ -1,5 +1,7 @@
 
+const { where } = require('sequelize');
 const Produto = require('../model/produto'); 
+const produtos = require('../model/produto');
 
 
 async function renderizaProduto (req, res)  {
@@ -23,7 +25,7 @@ async function criaProduto(req,res) {
      const nome = req.body.nomep
      const descricao = req.body.descricaop
      const categoria = req.body.categoriap
-     const imagem = req.body.imagem
+     const imagem = req.file ? '/uploads/' + req.file.filename : '/image.png'
 
      console.log(nome,descricao,categoria) 
 
@@ -34,6 +36,8 @@ async function criaProduto(req,res) {
         imagemUrl: imagem
      }).then(()=>{
         res.redirect("/gerenciarProdutos")
+     }).catch(err=>{
+        console.log(err)
      })
 }
 async function deletaProduto(req,res) {
@@ -49,9 +53,38 @@ async function deletaProduto(req,res) {
             })
         }
 }
+async function editarProduto(req,res) {
+    const id = req.params.id
+    const nome = req.body.nomep
+     const descricao = req.body.descricaop
+     const categoria = req.body.categoriap
+     const imagem = req.file ? '/uploads/' + req.file.filename : '/image.png'
+
+    let dadosParaAtt ={
+        nome:nome,
+        descricao:descricao,
+        categoria:categoria,
+    }
+
+    if(req.file){
+        dadosParaAtt.imagemUrl = '/uploads/' + req.file.filename
+    }
+     
+    Produto.update(dadosParaAtt,{
+        where:{
+            id:id
+        }
+    })
+    .then(()=>{
+        res.redirect("/gerenciarProdutos")
+     }).catch(err=>{
+        console.log(err)
+     })
+}
 
 module.exports={
     renderizaProduto,
     criaProduto,
-    deletaProduto
+    deletaProduto,
+    editarProduto
 }

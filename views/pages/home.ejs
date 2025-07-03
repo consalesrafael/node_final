@@ -7,54 +7,99 @@
     <h1 class="mb-5 text-center">Catálogo de Produtos</h1>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
-
-      <%# 1. Loop corrigido para 'produto' (singular) %>
       <% produtos.forEach(produto => { %>
-
         <div class="col">
-          <div class="card h-100 shadow-sm border-0">
-            
-            <%# 2. Dados dinâmicos para imagem, título e descrição %>
-            <img src="<%= produto.imagemUrl || '/images/produto_padrao.jpg' %>" class="card-img-top" style="height: 300px; object-fit: cover;" alt="<%= produto.nome %>">
-            <div class="card-body">
+          <div class="card h-100 shadow-sm">
+            <img src="<%= produto.imagemUrl || '/images/produto_padrao.jpg' %>" class="card-img-top" style="height: 200px; object-fit: contain; background-color: #fdfdfd;" alt="<%= produto.nome %>">
+            <div class="card-body d-flex flex-column">
               <h3 class="card-title"><%= produto.nome %></h3>
-              <p class="card-text"><%= produto.descricao %></p>
-            </div>
+              <p class="card-text text-muted"><%= produto.descricao %></p>
+              
+              <hr class="my-3">
 
-            <div class="card-footer bg-transparent border-0">
-              <%# 3. Botão com alvo dinâmico para o modal específico de cada produto %>
-              <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_<%= produto.id %>">
-                Ler mais
-              </button>
+              <div class="card-footer bg-transparent border-0 mt-auto pt-0">
+                <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_<%= produto.id %>">
+                  <i class="bi bi-eye me-2"></i>Ler mais
+                </button>
+              </div>
             </div>
-
           </div>
         </div>
-
       <% }) %> 
-
-    </div> </div>
+    </div>
+  </div>
 
   <% produtos.forEach(produto => { %>
     <div class="modal fade" id="modal_<%= produto.id %>" tabindex="-1" aria-labelledby="modalLabel_<%= produto.id %>" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalLabel_<%= produto.id %>"><%= produto.nome %></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p><strong>Descrição Detalhada:</strong> Aqui você pode colocar uma descrição muito mais completa do <%= produto.nome %>.</p>
-            <p><strong>Categoria:</strong> <%= produto.categoria %></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          </div>
+          <form action="/produtos/avaliar/<%= produto.id %>" method="POST">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel_<%= produto.id %>"><%= produto.nome %></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Descrição Detalhada:</strong> <%= produto.descricao %></p>
+              <p><strong>Categoria:</strong> <%= produto.categoria %></p>
+              
+              <hr>
+
+              <div class="mt-4">
+                <h5>Avalie este produto:</h5>
+                <div class="star-rating" data-product-id="<%= produto.id %>">
+                  <i class="bi bi-star" data-value="1"></i>
+                  <i class="bi bi-star" data-value="2"></i>
+                  <i class="bi bi-star" data-value="3"></i>
+                  <i class="bi bi-star" data-value="4"></i>
+                  <i class="bi bi-star" data-value="5"></i>
+                </div>
+                <input type="hidden" name="rating" id="rating-<%= produto.id %>" value="0">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+              <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   <% }) %>
 
   <%- include ("../partials/footer") %>
+  
+  <script src="/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const allStarRatings = document.querySelectorAll('.star-rating');
+
+      allStarRatings.forEach(starContainer => {
+        const stars = starContainer.querySelectorAll('i');
+        const productId = starContainer.dataset.productId;
+        const ratingInput = document.getElementById(`rating-${productId}`);
+
+        stars.forEach(star => {
+          star.addEventListener('click', function() {
+            const ratingValue = this.dataset.value;
+            ratingInput.value = ratingValue; // Guarda o valor no campo escondido
+
+            // Atualiza o estado visual das estrelas
+            stars.forEach(innerStar => {
+              if (innerStar.dataset.value <= ratingValue) {
+                innerStar.classList.add('filled');
+                innerStar.classList.remove('bi-star');
+                innerStar.classList.add('bi-star-fill');
+              } else {
+                innerStar.classList.remove('filled');
+                innerStar.classList.remove('bi-star-fill');
+                innerStar.classList.add('bi-star');
+              }
+            });
+          });
+        });
+      });
+    });
+  </script>
 </body>
 </html>
