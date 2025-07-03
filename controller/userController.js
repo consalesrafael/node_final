@@ -1,22 +1,36 @@
 const bcrypt = require("bcrypt");
 const usuario = require("../model/usuario");
+const { Op } = require("sequelize");
+
+
 
 async function createUser(req, res) {
-    const usuarioN = req.body.usuarioN;
-    const emailN = req.body.emailN;
-    const senhaN = req.body.senhaN;
+    const { usuarioN, emailN, senhaN } = req.body;
 
-    console.log(usuarioN, emailN, senhaN);
+    if (!usuarioN || !emailN || !senhaN) {
+        return res.render('pages/screnCreate', { 
+            erro: "Todos os campos são obrigatórios." 
+        });
+    }
 
     try {
-        if (!usuarioN || !emailN || !senhaN) {
-            return res
-                .status(400)
-                .json({ message: "Usuário, email ou senha estão em branco" });
+        const existente = await usuario.findOne({
+            where: {
+                [Op.or]: [
+                    { nome: usuarioN },
+                    { email: emailN }
+                ]
+            }
+        });
+
+        if (existente) {
+            return res.render('pages/screnCreate', {
+                erro: "O nome de utilizador ou o e-mail já estão em uso."
+            });
         }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(senhaN, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(senhaN, salt);
 
         await usuario.create({
             nome: usuarioN,
@@ -24,14 +38,15 @@ async function createUser(req, res) {
             senha: hash
         });
 
-        res.redirect("/")
+        res.redirect("/");
 
     } catch (err) {
-        console.error("Erro ao criar usuário:", err);
-        res.status(500).json({ message: "Erro ao criar usuário", error: err.message });
+        console.error("Erro ao criar utilizador:", err);
+        res.render('pages/screnCreate', {
+            erro: "Ocorreu um erro inesperado ao criar a sua conta."
+        });
     }
 }
-
 
 module.exports = {
     createUser

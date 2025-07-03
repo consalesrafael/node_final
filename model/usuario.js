@@ -4,7 +4,8 @@ const connection = require("../config/database");
 const usuario = connection.define('usuario', {
     nome: { 
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     email: {
         type: DataTypes.STRING,

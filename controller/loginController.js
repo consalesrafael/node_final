@@ -3,15 +3,15 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
 async function login(req,res){
-        const email = req.body.email
+        const usuario = req.body.usuario
         const senha = req.body.senha
-        const usuarioExistente = await usuarios.findOne({ where: { email: email } });
+        const usuarioExistente = await usuarios.findOne({ where: { nome: usuario } });
         
         if(usuarioExistente){
             const senhaValida = await bcrypt.compare(senha, usuarioExistente.senha)
             if(senhaValida){
             const token = jwt.sign(
-                {id: usuarioExistente.id, email: usuarioExistente.email, role: usuarioExistente.role },
+                {id: usuarioExistente.id, nome: usuarioExistente.nome, role: usuarioExistente.role },
                 process.env.JWT_SECRET,
                 {expiresIn: "1h"}
             )
@@ -21,12 +21,12 @@ async function login(req,res){
                 sameSite: 'strict',
                 maxAge: 36000000
             })
-            
+               
                return res.redirect("/home")
             }
         }
            
-        return res.render("login", { erro: "E-mail ou senha incorretos." });
+        return res.render("login", { erro: "Usuario ou senha incorretos." });
 }
 
 async function logout(req,res) {

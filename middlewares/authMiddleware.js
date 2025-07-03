@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 
 async function verificaJWT (req, res, next){
     const token = req.cookies.token;
-
+    const currentUser = req.cookies.name
     if(!token){
         return  res.status(401).render('login', {erro: "Deslogado por falta de autenticidade"})
     }
