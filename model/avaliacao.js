@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const connection = require("../config/database");
-const { type } = require("os");
+const { type, userInfo } = require("os");
 
-const avalicao = connection.define ("avaliacao",{
+const avaliacao = connection.define ("avaliacao",{
         avaliacao:{
             type: DataTypes.INTEGER,
             allowNull: true
@@ -21,9 +21,12 @@ const avalicao = connection.define ("avaliacao",{
          }
 }, {
     tableName: "avaliacao",
-    timestamps: false 
+    timestamps: false,
+    indexes:[
+        {
+        unique: true,
+        fields: ['produtoId', 'userId']
+    }]
 });
 
-avalicao.sync({ force: false }).then(() => {
-    console.log("Tabela de avaliacao criada com sucesso!");
-})
+module.exports = avaliacao
