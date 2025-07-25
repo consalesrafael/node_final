@@ -1,7 +1,7 @@
 
 const { where } = require('sequelize');
 const Produto = require('../model/produto'); 
-const produtos = require('../model/produto');
+const avaliacao = require('../model/avaliacao')
 
 
 async function renderizaProduto (req, res)  {
@@ -81,11 +81,42 @@ async function editarProduto(req,res) {
         console.log(err)
      })
 }
+async function avaliaProduto(req,res) {
+    try{
+        const produtoId = req.params.id
+        const usuarioId = req.user.id
+        const {nota, comentario} =req.body
+
+        const avaliacaoExiste = await avaliacao.findOne({
+            where:{
+                usuarioId: usuarioId,
+                produtoId: produtoId
+            }
+        })
+        if (avaliacaoExiste){
+            await avaliacaoExiste.update({nota, comentario})
+            console.log(`Avaliação ATUALIZADA para o produto ${produtoId}`)
+        }else{
+            await avaliacao.create({
+                nota,
+                comentario,
+                produtoId,
+                usuarioId
+            })
+            console.log(`Nova avaliação CRIADA para o produto ${produtoId}`)
+        }
+        res.redirect(`/produtos/${produtoId}`)
+    }catch (error){
+        console.error("Erro ao salvar avaliação:", error);
+        res.status(500).send("Ocorreu um erro ao processar sua avaliação.");
+    }
+}
 
 
 module.exports={
     renderizaProduto,
     criaProduto,
     deletaProduto,
-    editarProduto
+    editarProduto,
+    avaliaProduto
 }

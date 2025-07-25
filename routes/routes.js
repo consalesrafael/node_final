@@ -40,7 +40,7 @@ router.post('/createProduct', upload.single('imagem'),authMiddleware.verificaJWT
 router.post('/produtos/editar/:id', upload.single('imagem'),authMiddleware.verificaJWT, productController.editarProduto);
 router.post("/createUser", userController.createUser)
 router.post("/produtos/deletar/:id", authMiddleware.verificaJWT, productController.deletaProduto)
-router.post("/produtos/avaliar/:id", )
+router.post("/produtos/avaliar/:id",authMiddleware.verificaJWT, productController.avaliaProduto)
 router.post("/login", loginController.login)
 
 router.get("/",(req,res)=>{
