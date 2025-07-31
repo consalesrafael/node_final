@@ -111,5 +111,30 @@
       .star-rating i.filled {
         color: #ffc107;
       }
+      .star-rating i.rated {
+  color: gold; 
+}
+/* Contêiner que define o formato e a aparência */
+.image-container {
+  height: 220px;
+  border-radius: 15px; /* Bordas bem arredondadas */
+  overflow: hidden;    /* Essencial: corta as partes da imagem que saem do contêiner arredondado */
+  margin: 1rem;        /* Adiciona um espaçamento dentro do card */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidade */
+  transition: transform 0.3s ease; /* Animação suave para o hover */
+}
+
+/* Efeito de zoom suave ao passar o mouse */
+.image-container:hover {
+    transform: scale(1.05);
+}
+
+/* A imagem dentro do contêiner */
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* A MÁGICA: Preenche o espaço, mantém a proporção e corta o excesso. FIM DA DISTORÇÃO. */
+  object-position: center; /* Garante que o corte seja feito a partir do centro da imagem */
+}
     </style>
 </head>

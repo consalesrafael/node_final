@@ -7,10 +7,6 @@ const avaliacao = connection.define ("avaliacao",{
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        comentario:{
-            type: DataTypes.TEXT,
-            allowNull:true
-        },
          produtoId: {
             type: DataTypes.INTEGER,
             allowNull:false
