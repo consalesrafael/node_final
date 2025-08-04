@@ -4,6 +4,7 @@ const loginController = require("../controller/loginController")
 const userController = require("../controller/userController")
 const authMiddleware = require("../middlewares/authMiddleware")
 const productController = require("../controller/productController");
+const relatorioController = require("../controller/relatorioCrotoller")
 const path = require("path");
 const multer = require("multer")
 
@@ -25,6 +26,7 @@ router.get("/screnCreate",(req,res)=>{
 router.get("/home", authMiddleware.verificaJWT, productController.exibirCatalogo);
 
 router.get("/gerenciarProdutos",authMiddleware.verificaJWT, productController.renderizaProduto)
+router.get("/relatorios", authMiddleware.verificaJWT, relatorioController.exibirRelatorios)
 router.post("/logout",loginController.logout)
 router.post('/createProduct', upload.single('imagem'),authMiddleware.verificaJWT, productController.criaProduto);
 router.post('/produtos/editar/:id', upload.single('imagem'),authMiddleware.verificaJWT, productController.editarProduto);
