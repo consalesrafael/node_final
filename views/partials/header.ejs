@@ -167,5 +167,31 @@
       .list-group-item:last-child {
         border-bottom: none !important;
       }
+      .average-stars-outer {
+  position: relative;
+  display: inline-block;
+  font-size: 1.2rem;
+}
+
+.average-stars-outer::before {
+  font-family: "bootstrap-icons"; 
+  content: "\F586 \F586 \F586 \F586 \F586"; 
+  color: #ccc;
+}
+
+.average-stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0; 
+}
+
+.average-stars-inner::before {
+  font-family: "bootstrap-icons";
+  content: "\F588 \F588 \F588 \F588 \F588"; 
+  color: #ffc107;
+}
     </style>
 </head>

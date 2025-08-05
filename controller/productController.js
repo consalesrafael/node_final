@@ -1,4 +1,4 @@
-const { produto, avaliacao } = require('../model');
+const { produto, avaliacao, usuario } = require('../model');
 
 async function renderizaProduto(req, res) {
   try {
@@ -16,30 +16,40 @@ async function renderizaProduto(req, res) {
 
 async function exibirCatalogo(req, res) {
   try {
-    if (!req.user || !req.user.id) {
-      const produtos = await produto.findAll({ raw: true });
-      return res.render('pages/home', {
-        produtos: produtos.map(p => ({ ...p, minhaAvaliacao: 0 })),
-        user: req.user,
-        currentRoute: req.path
-      });
-    }
+    const usuarioId = req.user ? req.user.id : null;
 
-    const usuarioId = req.user.id;
-    const produtos = await produto.findAll({
+    const produtosComAvaliacoes = await produto.findAll({
       include: [{
         model: avaliacao,
-        as: 'avaliacoes',
-        where: { userId: usuarioId },
-        required: false
+        as: 'avaliacoes'
       }],
       order: [['nome', 'ASC']]
     });
 
-    const produtosFormatados = produtos.map(item => {
-      const p = item.get({ plain: true });
-      p.minhaAvaliacao = p.avaliacoes && p.avaliacoes.length > 0 ? p.avaliacoes[0].avaliacao : 0;
-      return p;
+    const produtosFormatados = produtosComAvaliacoes.map(p => {
+      const plainProduto = p.get({ plain: true });
+      
+      const totalAvaliacoes = plainProduto.avaliacoes.length;
+      let mediaAvaliacoes = 0;
+      let minhaAvaliacao = 0;
+
+      if (totalAvaliacoes > 0) {
+        const somaNotas = plainProduto.avaliacoes.reduce((acc, av) => acc + av.avaliacao, 0);
+        mediaAvaliacoes = somaNotas / totalAvaliacoes;
+
+        if (usuarioId) {
+          const minhaAvObj = plainProduto.avaliacoes.find(av => av.userId === usuarioId);
+          if (minhaAvObj) {
+            minhaAvaliacao = minhaAvObj.avaliacao;
+          }
+        }
+      }
+
+      plainProduto.mediaAvaliacoes = mediaAvaliacoes;
+      plainProduto.totalAvaliacoes = totalAvaliacoes;
+      plainProduto.minhaAvaliacao = minhaAvaliacao;
+      
+      return plainProduto;
     });
 
     res.render('pages/home', {
@@ -51,6 +61,26 @@ async function exibirCatalogo(req, res) {
   } catch (error) {
     console.error("Erro ao buscar produtos para o catálogo:", error);
     res.status(500).send("Erro ao carregar o catálogo.");
+  }
+}
+
+async function exibirRelatorios(req, res) {
+  try {
+    const [produtos, usuarios] = await Promise.all([
+      produto.findAll({ order: [['nome', 'ASC']], raw: true }),
+      usuario.findAll({ order: [['nome', 'ASC']], raw: true })
+    ]);
+
+    res.render('pages/relatorios', {
+      produtos: produtos,
+      usuarios: usuarios,
+      user: req.user,
+      currentRoute: req.path
+    });
+
+  } catch (error) {
+    console.error("Erro ao gerar relatórios:", error);
+    res.status(500).send("Erro ao carregar a página de relatórios.");
   }
 }
 
@@ -141,6 +171,7 @@ async function avaliaProduto(req, res) {
 module.exports = {
   renderizaProduto,
   exibirCatalogo,
+  exibirRelatorios,
   criaProduto,
   deletaProduto,
   editarProduto,
